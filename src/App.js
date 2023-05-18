@@ -95,7 +95,7 @@ function reducer(state,{type,payload}){
         }
 
       default:
-       return 0;
+       return 0
   }
 }
 
@@ -119,10 +119,30 @@ function evaluate({currentOperand,previousOperand,operation}){
     case "÷":
       computation=previous / current
       break
+
+    default:
+       return 0;
   }
   return computation.toString()
 
 }
+
+const  VALUE_FORMAT=new Intl.NumberFormat("en-us",{
+  maximumFractionDigits:0
+})
+
+function formatOperand(operand){
+  if(operand==null){
+    return 
+  }
+  const [integer,decimal]=operand.split(".")
+  if(decimal==null) {
+    return VALUE_FORMAT.format(integer)
+  }
+  return `${VALUE_FORMAT.format(integer)}.${decimal}`
+  
+}
+
 function App() {
 
   const  [{currentOperand,previousOperand,operation},dispatch]=useReducer(reducer,{});
@@ -131,8 +151,8 @@ function App() {
   return (
     <div className="app">
       <div className="output">
-        <div className="previous-operand">{previousOperand} {operation}</div>
-        <div className="current-operand">{currentOperand}</div>
+        <div className="previous-operand">{formatOperand(previousOperand)} {operation}</div>
+        <div className="current-operand">{formatOperand(currentOperand)}</div>
       </div>
       <button className="span-two" onClick={()=>dispatch({type:ACTIONS.CLEAR})}>AC</button>
       <button onClick={()=>dispatch({type:ACTIONS.DELETE_DIGIT})}>DEL</button>
